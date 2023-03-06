@@ -6,6 +6,10 @@ edition = "2021"
 [profile.release]
 strip = "symbols"
 
+[[bin]]
+name = "yoisho-server"
+path = "src/main.rs"
+
 [dependencies]
 axum = "0.6.10"
 serde = { version = "1.0.137", features = ["derive"] }
