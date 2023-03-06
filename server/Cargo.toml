@@ -1,0 +1,15 @@
+[package]
+name = "yoisho-clicker-server"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+strip = "symbols"
+
+[dependencies]
+axum = "0.6.10"
+serde = { version = "1.0.137", features = ["derive"] }
+tokio = { version = "1.19.2", features = ["full"] }
+tracing = "0.1.35"
+tower = "0.4.13"
+tower-http = { version = "0.4,0", features = ["full"] }
