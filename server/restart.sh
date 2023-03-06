@@ -2,7 +2,7 @@
 
 set -eux
 
-pkill -2 yoisho-server;
+pkill -2 yoisho-server || true;
 while pgrep -u $UID -x yoisho-server >/dev/null; do sleep 1; done;
 mkdir -p $HOME/yc-server;
 cp ./target/release/yoisho-server $HOME/yc-server/yoisho-server;
