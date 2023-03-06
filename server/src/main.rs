@@ -53,25 +53,36 @@ async fn not_found_handler() -> impl IntoResponse {
 }
 
 /// Returns the selected sound file if it exists.
-async fn sound(id_result: Result<Path<u32>, PathRejection>) -> Response {
+async fn sound(id_result: Result<Path<String>, PathRejection>) -> Response {
     if let Ok(Path(id)) = id_result {
-        const PREFIX: &str = "yoisho_";
-        const SUFFIX: &str = ".mp3";
+        let id = if let Ok(id) = id.parse::<u32>() {
+            Some(id)
+        } else if id.ends_with(".mp3") {
+            id.strip_suffix(".mp3")
+                .and_then(|id| id.parse::<u32>().ok())
+        } else {
+            None
+        };
 
-        let uri = format!("/{}{:0>4}{}", PREFIX, id, SUFFIX);
-        match Request::builder().uri(&uri).body(Body::empty()) {
-            Ok(req) => match ServeDir::new("assets/").oneshot(req).await {
-                Ok(resp) => {
-                    if resp.status() == StatusCode::OK {
-                        return resp.into_response();
+        if let Some(id) = id {
+            const PREFIX: &str = "yoisho_";
+            const SUFFIX: &str = ".mp3";
+
+            let uri = format!("/{}{:0>4}{}", PREFIX, id, SUFFIX);
+            match Request::builder().uri(&uri).body(Body::empty()) {
+                Ok(req) => match ServeDir::new("assets/").oneshot(req).await {
+                    Ok(resp) => {
+                        if resp.status() == StatusCode::OK {
+                            return resp.into_response();
+                        }
                     }
-                }
+                    Err(err) => {
+                        error!("Failed to get a response for file {} - err: {}", uri, err);
+                    }
+                },
                 Err(err) => {
-                    error!("Failed to get a response for file {} - err: {}", uri, err);
+                    error!("Failed to build a request for file {} - err: {}", uri, err);
                 }
-            },
-            Err(err) => {
-                error!("Failed to build a request for file {} - err: {}", uri, err);
             }
         }
     }
