@@ -56,7 +56,7 @@ async fn not_found_handler() -> impl IntoResponse {
 async fn sound(id_result: Result<Path<u32>, PathRejection>) -> Response {
     if let Ok(Path(id)) = id_result {
         const PREFIX: &str = "yoisho_";
-        const SUFFIX: &str = ".wav";
+        const SUFFIX: &str = ".mp3";
 
         let uri = format!("/{}{:0>4}{}", PREFIX, id, SUFFIX);
         match Request::builder().uri(&uri).body(Body::empty()) {
