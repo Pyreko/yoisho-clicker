@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, path};
 
 use axum::{
     body::Body,
@@ -25,7 +25,7 @@ async fn main() {
 
     info!("Listening on {}", addr);
 
-    if std::path::Path::new("assets/").exists() {
+    if path::Path::new("assets/").exists() {
         let num_files = fs::read_dir("assets/").unwrap().count();
         info!("Found {} files in assets!", num_files);
     } else {
