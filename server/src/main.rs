@@ -1,37 +1,66 @@
-use std::{fs, path};
+mod counter;
+use counter::*;
+
+mod sound;
+use sound::*;
+
+use std::{fs, sync::Arc};
 
 use axum::{
-    body::Body,
-    extract::{rejection::PathRejection, Path},
-    handler::HandlerWithoutStateExt,
-    http::{Request, StatusCode},
-    response::{IntoResponse, Response},
-    routing::get,
-    Router,
+    handler::HandlerWithoutStateExt, http::StatusCode, response::IntoResponse, routing::get,
+    Extension, Router,
 };
-use tower::util::ServiceExt;
-use tower_http::services::ServeDir;
+use clap::Parser;
+use sqlx::SqlitePool;
 use tracing::{error, info};
+
+#[derive(Parser, Debug)]
+struct Args {
+    #[arg(short, long, default_value = "counts.sqlite")]
+    database_url: String,
+
+    #[arg(short, long)]
+    assets_path: std::path::PathBuf,
+}
 
 #[tokio::main]
 async fn main() {
-    info!("Starting up yoisho clicker server...");
+    let args = Args::parse();
 
-    let app = Router::new()
-        .route("/sound/:id", get(sound))
-        .fallback_service(not_found_handler.into_service());
+    info!("Starting up YC server!");
+    info!("Connecting to SQLite pool...");
+    let pool = Arc::new(
+        SqlitePool::connect(&format!("sqlite://{}", args.database_url))
+            .await
+            .unwrap(),
+    );
+
+    // Assert that the database works before initialization.
+    get_count(pool.clone())
+        .await
+        .expect("Database has the correct columns.");
 
     let addr = "127.0.0.1:8088".parse().unwrap();
+    info!("Listening on {}...", addr);
 
-    info!("Listening on {}", addr);
+    info!("Setting up router...");
+    let app = Router::new()
+        .route("/sound/:id", get(sound))
+        .route("/count", get(count))
+        .route("/increment", get(increment))
+        .route("/num-files", get(num_audio_tracks))
+        .layer(Extension(pool.clone()))
+        .layer(Extension(args.assets_path.clone()))
+        .fallback_service(not_found_handler.into_service());
 
-    if path::Path::new("assets/").exists() {
-        let num_files = fs::read_dir("assets/").unwrap().count();
+    if args.assets_path.exists() {
+        let num_files = fs::read_dir(args.assets_path).unwrap().count();
         info!("Found {} files in assets!", num_files);
     } else {
-        error!("Warning - no asset/ folder found! There should be one located near the binary!");
+        error!("Warning - no assets folder found!");
     }
 
+    info!("Starting up Axum server...");
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .with_graceful_shutdown(async {
@@ -41,7 +70,7 @@ async fn main() {
         .await
         .unwrap();
 
-    info!("Shutting down server.");
+    info!("Shutting down YC server.");
 }
 
 fn not_found() -> StatusCode {
@@ -50,42 +79,4 @@ fn not_found() -> StatusCode {
 
 async fn not_found_handler() -> impl IntoResponse {
     not_found()
-}
-
-/// Returns the selected sound file if it exists.
-async fn sound(id_result: Result<Path<String>, PathRejection>) -> Response {
-    if let Ok(Path(id)) = id_result {
-        let id = if let Ok(id) = id.parse::<u32>() {
-            Some(id)
-        } else if id.ends_with(".mp3") {
-            id.strip_suffix(".mp3")
-                .and_then(|id| id.parse::<u32>().ok())
-        } else {
-            None
-        };
-
-        if let Some(id) = id {
-            const PREFIX: &str = "yoisho_";
-            const SUFFIX: &str = ".mp3";
-
-            let uri = format!("/{}{:0>4}{}", PREFIX, id, SUFFIX);
-            match Request::builder().uri(&uri).body(Body::empty()) {
-                Ok(req) => match ServeDir::new("assets/").oneshot(req).await {
-                    Ok(resp) => {
-                        if resp.status() == StatusCode::OK {
-                            return resp.into_response();
-                        }
-                    }
-                    Err(err) => {
-                        error!("Failed to get a response for file {} - err: {}", uri, err);
-                    }
-                },
-                Err(err) => {
-                    error!("Failed to build a request for file {} - err: {}", uri, err);
-                }
-            }
-        }
-    }
-
-    not_found().into_response()
 }

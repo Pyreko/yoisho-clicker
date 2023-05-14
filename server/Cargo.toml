@@ -12,8 +12,13 @@ path = "src/main.rs"
 
 [dependencies]
 axum = "0.6.18"
+clap = { version = "4.2.7", default-features = false, features = [
+    "std",
+    "derive",
+] }
 serde = { version = "1.0.163", features = ["derive"] }
+sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "sqlite"] }
 tokio = { version = "1.28.1", features = ["full"] }
-tracing = "0.1.37"
 tower = "0.4.13"
 tower-http = { version = "0.4.0", features = ["full"] }
+tracing = "0.1.37"
