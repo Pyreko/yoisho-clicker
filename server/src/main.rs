@@ -4,6 +4,7 @@ use counter::*;
 mod sound;
 use sound::*;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
+use tracing_subscriber::EnvFilter;
 
 use std::{fs, sync::Arc};
 
@@ -30,6 +31,20 @@ struct Args {
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
+
+    let (rolling_file_appender, _rfa_guard) = {
+        let rfa = tracing_appender::rolling::daily("./", "volume.log");
+        tracing_appender::non_blocking(rfa)
+    };
+
+    let (console_writer, _cw_guard) = tracing_appender::non_blocking(std::io::stdout());
+
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .with_writer(rolling_file_appender)
+        .with_writer(console_writer)
+        .with_ansi(false)
+        .init();
 
     info!("Starting up YC server!");
     info!("Connecting to SQLite pool...");
