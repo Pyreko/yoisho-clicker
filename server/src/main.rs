@@ -39,12 +39,12 @@ async fn main() {
         tracing_appender::non_blocking(rfa)
     };
 
-    let (console_writer, _cw_guard) = tracing_appender::non_blocking(std::io::stdout());
+    // let (console_writer, _cw_guard) = tracing_appender::non_blocking(std::io::stdout());
 
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::from_default_env())
         .with_writer(rolling_file_appender)
-        .with_writer(console_writer)
+        // .with_writer(console_writer) // This apparently overwrites the rolling file appender.
         .with_ansi(false)
         .with_level(true)
         .init();
