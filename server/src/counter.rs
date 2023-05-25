@@ -1,11 +1,7 @@
 use std::sync::Arc;
 
-use axum::{
-    extract::{rejection::PathRejection, Path},
-    http::StatusCode,
-    response::Result,
-    Extension, Json,
-};
+use axum::{http::StatusCode, response::Result, Extension, Json};
+use serde::Deserialize;
 use sqlx::{Pool, Sqlite};
 use tracing::{error, warn};
 
@@ -39,33 +35,37 @@ pub async fn count(Extension(pool): Extension<Arc<Pool<Sqlite>>>) -> Json<u64> {
     }
 }
 
+#[derive(Deserialize)]
+pub struct IncrementRequest {
+    amount: i32,
+}
+
 /// Increments the count by `n` and returns the new count.
 pub async fn increment(
-    id: Result<Path<i32>, PathRejection>,
     Extension(pool): Extension<Arc<Pool<Sqlite>>>,
+    Json(request): Json<IncrementRequest>,
 ) -> Result<Json<u64>> {
     let mut conn = pool.acquire().await.unwrap();
+    let id = request.amount;
 
-    if let Ok(Path(id)) = id {
-        if id > 0 {
-            match sqlx::query!(
-                "UPDATE counts SET count = count + ? WHERE name = 'volume' RETURNING count",
-                id
-            )
-            .fetch_one(&mut conn)
-            .await
-            {
-                Ok(res) => match res.count {
-                    Some(count) => {
-                        return Ok(Json(count as u64));
-                    }
-                    None => {
-                        error!("count was missing! Re-initialize the database!");
-                    }
-                },
-                Err(err) => {
-                    error!("Failed to increment in DB - err: {}", err);
+    if id > 0 {
+        match sqlx::query!(
+            "UPDATE counts SET count = count + ? WHERE name = 'volume' RETURNING count",
+            id
+        )
+        .fetch_one(&mut conn)
+        .await
+        {
+            Ok(res) => match res.count {
+                Some(count) => {
+                    return Ok(Json(count as u64));
                 }
+                None => {
+                    error!("count was missing! Re-initialize the database!");
+                }
+            },
+            Err(err) => {
+                error!("Failed to increment in DB - err: {}", err);
             }
         }
     }

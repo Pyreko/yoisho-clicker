@@ -3,11 +3,15 @@ use counter::*;
 
 mod sound;
 use sound::*;
+use tower_http::{cors::CorsLayer, trace::TraceLayer};
 
 use std::{fs, sync::Arc};
 
 use axum::{
-    handler::HandlerWithoutStateExt, http::StatusCode, response::IntoResponse, routing::get,
+    handler::HandlerWithoutStateExt,
+    http::{HeaderValue, Method, StatusCode},
+    response::IntoResponse,
+    routing::{get, post},
     Extension, Router,
 };
 use clap::Parser;
@@ -43,19 +47,28 @@ async fn main() {
     let addr = "127.0.0.1:8088".parse().unwrap();
     info!("Listening on {}...", addr);
 
+    let cors = CorsLayer::new()
+        .allow_methods(vec![Method::GET, Method::POST])
+        .allow_origin([
+            HeaderValue::from_str("http://localhost:3000").unwrap(),
+            HeaderValue::from_str("https://yoisho.clicker").unwrap(),
+        ]);
+
     info!("Setting up router...");
     let app = Router::new()
         .route("/sound/:id", get(sound))
+        .route("/increment", post(increment))
         .route("/count", get(count))
-        .route("/increment", get(increment))
         .route("/num-files", get(num_audio_tracks))
         .layer(Extension(pool.clone()))
         .layer(Extension(args.assets_path.clone()))
+        .layer(TraceLayer::new_for_http())
+        .layer(cors)
         .fallback_service(not_found_handler.into_service());
 
     if args.assets_path.exists() {
         let num_files = fs::read_dir(args.assets_path).unwrap().count();
-        info!("Found {} files in assets!", num_files);
+        info!("Found {num_files} files in assets!");
     } else {
         error!("Warning - no assets folder found!");
     }
@@ -79,4 +92,9 @@ fn not_found() -> StatusCode {
 
 async fn not_found_handler() -> impl IntoResponse {
     not_found()
+}
+
+#[cfg(test)]
+mod tests {
+    // TODO: Add tests to verify endpoints.
 }
