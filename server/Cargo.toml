@@ -16,6 +16,7 @@ clap = { version = "4.2.7", default-features = false, features = [
     "std",
     "derive",
 ] }
+dotenv = "0.15.0"
 serde = { version = "1.0.163", features = ["derive"] }
 sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "sqlite"] }
 tokio = { version = "1.28.1", features = ["full"] }

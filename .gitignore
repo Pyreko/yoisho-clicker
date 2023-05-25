@@ -1,3 +1,4 @@
 .vscode
 raw_assets/
 **/*.sqlite
+**/volume.log*

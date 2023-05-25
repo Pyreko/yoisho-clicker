@@ -21,8 +21,8 @@ use tracing::{error, info};
 
 #[derive(Parser, Debug)]
 struct Args {
-    #[arg(short, long, default_value = "counts.sqlite")]
-    database_url: String,
+    #[arg(short, long)]
+    database_url: Option<String>,
 
     #[arg(short, long)]
     assets_path: std::path::PathBuf,
@@ -30,8 +30,10 @@ struct Args {
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv().unwrap();
     let args = Args::parse();
 
+    // Initialize logging.
     let (rolling_file_appender, _rfa_guard) = {
         let rfa = tracing_appender::rolling::daily("./", "volume.log");
         tracing_appender::non_blocking(rfa)
@@ -44,12 +46,19 @@ async fn main() {
         .with_writer(rolling_file_appender)
         .with_writer(console_writer)
         .with_ansi(false)
+        .with_level(true)
         .init();
 
+    // Start up the server.
     info!("Starting up YC server!");
     info!("Connecting to SQLite pool...");
+
+    let database_url = args
+        .database_url
+        .unwrap_or_else(|| std::env::var("DATABASE_URL").expect("The sqlite server must either be passed as an argument or set as an environment variable!"));
+
     let pool = Arc::new(
-        SqlitePool::connect(&format!("sqlite://{}", args.database_url))
+        SqlitePool::connect(&format!("sqlite://{}", database_url))
             .await
             .unwrap(),
     );
