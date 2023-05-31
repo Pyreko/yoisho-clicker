@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+</script>
+
+<div>
+    hi
+</div>
+
+<style>
+    :global(body) {
+        --accent-light: #ee62b8;
+        --accent-mid: #944a97;
+        --accent-dark: #743b87;
+        --background-white: #fde5f1;
+        --accent-white: #fec3e0;
+    }
+</style>
