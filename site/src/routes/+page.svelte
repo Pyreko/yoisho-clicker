@@ -1,11 +1,12 @@
 <script lang="ts">
+	import Clicker from "$lib/components/Clicker.svelte";
 </script>
 
 <div>
-    hi
+    <Clicker />
 </div>
 
-<style>
+<style lang="scss">
     :global(body) {
         --accent-light: #ee62b8;
         --accent-mid: #944a97;
