@@ -8,5 +8,5 @@ just use a simple SQLite DB for storing one value because I'm lazy) and deliveri
 Run the `setup.sh` script to initialize the database, then run the server by doing:
 
 ```bash
-cargo run --release -- -a $ASSETS_PATH -d $DATABASE_PATH
+cargo run --release -- -a $ASSETS_PATH
 ```

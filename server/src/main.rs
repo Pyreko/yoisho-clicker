@@ -24,7 +24,7 @@ struct Args {
     #[arg(short, long)]
     database_url: Option<String>,
 
-    #[arg(short, long)]
+    #[arg(short, long, default_value = "./assets/")]
     assets_path: std::path::PathBuf,
 }
 
