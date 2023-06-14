@@ -1,7 +1,24 @@
 <script lang="ts">
-	import { localCount, globalCount } from '$lib/store';
+	import {
+		localCount,
+		globalCount,
+		updateCounts,
+		getNumAudioTracks,
+		getAndPlaySound
+	} from '$lib/store';
 
-	async function onClick() {}
+	let numAudioTracks: undefined | number = undefined;
+	let audioContext: AudioContext | undefined = undefined;
+
+	async function onClick() {
+		updateCounts(1);
+
+		if (numAudioTracks === undefined) {
+			numAudioTracks = (await getNumAudioTracks()) - 1;
+		}
+
+		await getAndPlaySound(audioContext, numAudioTracks);
+	}
 </script>
 
 <div id="clicker">

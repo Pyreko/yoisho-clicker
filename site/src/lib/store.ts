@@ -1,7 +1,7 @@
 import { get, writable, type Subscriber } from 'svelte/store';
 import { dev } from '$app/environment';
 
-export const API_URL_BASE: string = dev ? 'http://localhost:8080' : 'https://api.yoisho.clicker';
+export const API_URL_BASE: string = dev ? 'http://localhost:8088' : 'https://api.yoisho.clicker';
 
 /**
  * Obtains local count stored on localStorage.
@@ -58,6 +58,97 @@ const getGlobalCount = async (): Promise<number> => {
 };
 
 /**
+ *  Returns a random value from 0 to the given `maxVal`.
+ */
+function randomInt(maxVal: number) {
+	return Math.floor(Math.random() * (maxVal + 1));
+}
+
+/**
+ * Gets and plays a single sound from the API.
+ */
+export const getAndPlaySound = async (
+	audioContext: AudioContext | undefined,
+	numAudioTracks: number
+) => {
+	const whichTrack = randomInt(numAudioTracks);
+	const audio = new Audio();
+
+	audio.crossOrigin = 'anonymous';
+	audio.src = `${API_URL_BASE}/sound/${whichTrack}`;
+
+	// Now stick it in a random channel from -1 to 1.
+	if (audioContext == undefined) {
+		audioContext = new AudioContext();
+	}
+
+	if (audioContext != undefined) {
+		const src = audioContext.createMediaElementSource(audio);
+		const pan = randomInt(2) - 1; // Random value from -1, 0, and 1.
+		const stereoNode = new StereoPannerNode(audioContext, { pan });
+		src.connect(stereoNode).connect(audioContext.destination);
+	}
+
+	audio.play();
+};
+
+/**
+ * Gets the number of audio tracks from the API.
+ */
+export const getNumAudioTracks = async (): Promise<number> => {
+	const DEFAULT_NUM_AUDIO_TRACKS = 300;
+
+	try {
+		const resp = await fetch(`${API_URL_BASE}/num-files`);
+
+		if (resp.ok) {
+			const json = await resp.json();
+			const parsed = parseInt(json['count'], 10);
+			if (!isNaN(parsed)) {
+				return parsed;
+			}
+		}
+
+		return DEFAULT_NUM_AUDIO_TRACKS;
+	} catch {
+		return DEFAULT_NUM_AUDIO_TRACKS;
+	}
+};
+
+/**
+ * Holds values to batch send as part of a global update.
+ */
+let batchedForGlobal = 0;
+
+/**
+ * Updates the local storage by the amount, and also stores it as part
+ * of the batched counts to send later.
+ */
+export const updateCounts = (amount: number) => {
+	let newLocalCount = 0;
+
+	batchedForGlobal += amount;
+	localCount.update((curr) => {
+		newLocalCount = curr + amount;
+		return newLocalCount;
+	});
+	globalCount.update((curr) => curr + amount);
+
+	localStorage.setItem('localYoishoCount', newLocalCount.toString());
+};
+
+const batchGlobalUpdate = async () => {
+	if (batchedForGlobal > 0) {
+		await fetch(`${API_URL_BASE}/increment`, { method: 'POST' });
+		batchedForGlobal = 0;
+	}
+};
+
+/**
+ * Timer to update the counts via API on an interval.
+ */
+
+/**
  *
  * @param diff The difference between the previous value and the new value.
  * @returns How much to increment the counter by.
@@ -67,7 +158,7 @@ const calculateIncrement = (diff: number) => {
 };
 
 // This is a global for lazy reasons.
-let timer: undefined | ReturnType<typeof setInterval> = undefined;
+let getGlobalCountTimer: undefined | ReturnType<typeof setInterval> = undefined;
 
 export const setGlobalCount = async (set: Subscriber<number>, newVal: number) => {
 	// Some ugly code to make a pretty count-up.
@@ -75,13 +166,13 @@ export const setGlobalCount = async (set: Subscriber<number>, newVal: number) =>
 
 	if (currentVal != newVal) {
 		let increment = calculateIncrement(newVal - currentVal);
-		if (timer !== undefined) {
-			clearInterval(timer);
+		if (getGlobalCountTimer !== undefined) {
+			clearInterval(getGlobalCountTimer);
 		}
 
-		timer = setInterval(() => {
+		getGlobalCountTimer = setInterval(() => {
 			if (currentVal >= newVal) {
-				clearInterval(timer);
+				clearInterval(getGlobalCountTimer);
 			} else {
 				const diff = newVal - currentVal;
 				if (diff < increment) {
