@@ -3,59 +3,41 @@ import { dev } from '$app/environment';
 
 export const API_URL_BASE: string = dev ? 'http://localhost:8088' : 'https://api.yoisho.clicker';
 
-/**
- * Obtains local count stored on localStorage.
- * @returns The local count, if it exists/is valid, or 0.
- */
-const getLocalCount = () => {
+const getLocalKey = (key: string) => {
 	if (typeof localStorage !== 'undefined') {
-		const countKey = 'localYoishoCount';
-		const storedCount = localStorage.getItem(countKey);
+		const storedVal = localStorage.getItem(key);
 
-		if (storedCount == null) {
-			return 0;
+		if (storedVal == null) {
+			return undefined;
 		} else {
-			const parsed = parseInt(storedCount, 10);
-			if (isNaN(parsed)) {
-				// If it isn't a number, also erase the value.
-				localStorage.removeItem(countKey);
-				return 0;
-			} else {
-				return parsed;
-			}
+			return storedVal;
 		}
 	} else {
+		return undefined;
+	}
+};
+
+const getLocalNum = (key: string) => {
+	const storedCount = getLocalKey(key);
+
+	if (storedCount == undefined) {
 		return 0;
+	} else {
+		const parsed = parseInt(storedCount, 10);
+		if (isNaN(parsed)) {
+			// If it isn't a number, also erase the value.
+			localStorage.removeItem(key);
+			return 0;
+		} else {
+			return parsed;
+		}
 	}
 };
 
 /**
  * The local count. The initial value is obtained from localStorage.
  */
-export const localCount = writable(getLocalCount());
-
-/**
- * Obtains the global count via the API.
- * @returns The global count. If it fails, it will just return 0.
- */
-const getGlobalCount = async (): Promise<number> => {
-	try {
-		const resp = await fetch(`${API_URL_BASE}/count`);
-
-		if (resp.ok) {
-			const json = await resp.json();
-			const parsed = parseInt(json['count'], 10);
-
-			if (!isNaN(parsed)) {
-				return parsed;
-			}
-		}
-
-		return 0;
-	} catch {
-		return 0;
-	}
-};
+export const localCount = writable(getLocalNum('localYoishoCount'));
 
 /**
  *  Returns a random value from 0 to the given `maxVal`.
@@ -118,7 +100,24 @@ export const getNumAudioTracks = async (): Promise<number> => {
 /**
  * Holds values to batch send as part of a global update.
  */
-let batchedForGlobal = 0;
+let batchedForGlobal = getLocalNum('batchedYoishoCount');
+
+// This is a global for lazy reasons.
+// TODO: Make this stop running if 0, and start again otherwise.
+let setGlobalCountTimer = setInterval(async () => {
+	if (batchedForGlobal > 0) {
+		await fetch(`${API_URL_BASE}/increment`, {
+			method: 'POST',
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ amount: batchedForGlobal })
+		});
+		batchedForGlobal = 0;
+		localStorage.setItem('batchedYoishoCount', batchedForGlobal.toString());
+	}
+}, 10 * 1000);
 
 /**
  * Updates the local storage by the amount, and also stores it as part
@@ -127,26 +126,17 @@ let batchedForGlobal = 0;
 export const updateCounts = (amount: number) => {
 	let newLocalCount = 0;
 
-	batchedForGlobal += amount;
 	localCount.update((curr) => {
 		newLocalCount = curr + amount;
 		return newLocalCount;
 	});
-	globalCount.update((curr) => curr + amount);
-
 	localStorage.setItem('localYoishoCount', newLocalCount.toString());
-};
 
-const batchGlobalUpdate = async () => {
-	if (batchedForGlobal > 0) {
-		await fetch(`${API_URL_BASE}/increment`, { method: 'POST' });
-		batchedForGlobal = 0;
-	}
-};
+	batchedForGlobal += amount;
+	localStorage.setItem('batchedYoishoCount', batchedForGlobal.toString());
 
-/**
- * Timer to update the counts via API on an interval.
- */
+	globalCount.update((curr) => curr + amount);
+};
 
 /**
  *
@@ -157,11 +147,35 @@ const calculateIncrement = (diff: number) => {
 	return Math.max(1, 10 ** Math.floor(Math.log10(diff)));
 };
 
+/**
+ * Obtains the global count via the API.
+ * @returns The global count. If it fails, it will just return 0.
+ */
+export const getGlobalCount = async (): Promise<number> => {
+	try {
+		const resp = await fetch(`${API_URL_BASE}/count`);
+
+		if (resp.ok) {
+			const json = await resp.json();
+			const parsed = parseInt(json, 10);
+
+			if (!isNaN(parsed)) {
+				return parsed;
+			}
+		}
+
+		return 0;
+	} catch {
+		return 0;
+	}
+};
+
 // This is a global for lazy reasons.
 let getGlobalCountTimer: undefined | ReturnType<typeof setInterval> = undefined;
 
 export const setGlobalCount = async (set: Subscriber<number>, newVal: number) => {
 	// Some ugly code to make a pretty count-up.
+	// This is fine as it's not a hot loop... once every 20 seconds is fine... right?
 	let currentVal = get(globalCount);
 
 	if (currentVal != newVal) {

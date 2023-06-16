@@ -41,14 +41,14 @@
 		clip-path: polygon(
 			47% 0,
 			74% 5%,
-			88% 19%,
-			99% 41%,
-			87% 82%,
+			88% 20%,
+			98% 41%,
+			85% 82%,
 			51% 100%,
-			18% 86%,
-			6% 67%,
-			3% 40%,
-			16.5% 12.5%
+			22% 86%,
+			8% 67%,
+			4% 45%,
+			16% 15%
 		);
 
 		padding: 4rem;
@@ -62,6 +62,9 @@
 		min-width: 25rem;
 		width: 70%;
 		max-width: 50rem;
+		min-height: 25rem;
+		height: 70%;
+		max-height: 50rem;
 		aspect-ratio: 1;
 
 		background: linear-gradient(to bottom, #753f81 0%, #753f81 45%, #cb4092 100%);
