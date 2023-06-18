@@ -9,7 +9,7 @@ use tracing::{error, warn};
 pub async fn get_count(pool: Arc<Pool<Sqlite>>) -> std::result::Result<u64, sqlx::Error> {
     match pool.acquire().await {
         Ok(mut conn) => {
-            match sqlx::query!("SELECT count FROM counts WHERE name = 'volume'")
+            match sqlx::query!("SELECT count FROM counts WHERE name = 'yoisho'")
                 .fetch_one(&mut conn)
                 .await
             {
@@ -50,7 +50,7 @@ pub async fn increment(
 
     if id > 0 {
         match sqlx::query!(
-            "UPDATE counts SET count = count + ? WHERE name = 'volume' RETURNING count",
+            "UPDATE counts SET count = count + ? WHERE name = 'yoisho' RETURNING count",
             id
         )
         .fetch_one(&mut conn)
