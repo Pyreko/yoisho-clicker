@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Clicker from '$lib/components/Clicker.svelte';
-	import { getGlobalCount, globalCount, setGlobalCount } from '$lib/store';
+	import { getGlobalCount, globalCount, setGlobalCount } from '$lib/utils/store';
 	import { onMount } from 'svelte';
 
 	async function initializeGlobalCount() {

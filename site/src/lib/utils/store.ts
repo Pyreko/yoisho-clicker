@@ -1,7 +1,5 @@
 import { get, writable, type Subscriber } from 'svelte/store';
-import { dev } from '$app/environment';
-
-export const API_URL_BASE: string = dev ? 'http://localhost:8088' : 'https://api.yoisho.clicker';
+import { API_URL_BASE } from './utils';
 
 const getLocalKey = (key: string) => {
 	if (typeof localStorage !== 'undefined') {
@@ -38,64 +36,6 @@ const getLocalNum = (key: string) => {
  * The local count. The initial value is obtained from localStorage.
  */
 export const localCount = writable(getLocalNum('localYoishoCount'));
-
-/**
- *  Returns a random value from 0 to the given `maxVal`.
- */
-function randomInt(maxVal: number) {
-	return Math.floor(Math.random() * (maxVal + 1));
-}
-
-/**
- * Gets and plays a single sound from the API.
- */
-export const getAndPlaySound = async (
-	audioContext: AudioContext | undefined,
-	numAudioTracks: number
-) => {
-	const whichTrack = randomInt(numAudioTracks);
-	const audio = new Audio();
-
-	audio.crossOrigin = 'anonymous';
-	audio.src = `${API_URL_BASE}/sound/${whichTrack}`;
-
-	// Now stick it in a random channel from -1 to 1.
-	if (audioContext == undefined) {
-		audioContext = new AudioContext();
-	}
-
-	if (audioContext != undefined) {
-		const src = audioContext.createMediaElementSource(audio);
-		const pan = randomInt(2) - 1; // Random value from -1, 0, and 1.
-		const stereoNode = new StereoPannerNode(audioContext, { pan });
-		src.connect(stereoNode).connect(audioContext.destination);
-	}
-
-	audio.play();
-};
-
-/**
- * Gets the number of audio tracks from the API.
- */
-export const getNumAudioTracks = async (): Promise<number> => {
-	const DEFAULT_NUM_AUDIO_TRACKS = 300;
-
-	try {
-		const resp = await fetch(`${API_URL_BASE}/num-files`);
-
-		if (resp.ok) {
-			const json = await resp.json();
-			const parsed = parseInt(json['count'], 10);
-			if (!isNaN(parsed)) {
-				return parsed;
-			}
-		}
-
-		return DEFAULT_NUM_AUDIO_TRACKS;
-	} catch {
-		return DEFAULT_NUM_AUDIO_TRACKS;
-	}
-};
 
 /**
  * Holds values to batch send as part of a global update.

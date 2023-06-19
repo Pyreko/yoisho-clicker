@@ -1,11 +1,7 @@
 <script lang="ts">
-	import {
-		localCount,
-		globalCount,
-		updateCounts,
-		getNumAudioTracks,
-		getAndPlaySound
-	} from '$lib/store';
+	import { getAndPlaySound, getNumAudioTracks } from '$lib/utils/audio';
+	import { localCount, globalCount, updateCounts } from '$lib/utils/store';
+	import Chat from './Chat.svelte';
 
 	let numAudioTracks: undefined | number = undefined;
 	let audioContext: AudioContext | undefined = undefined;
@@ -26,7 +22,7 @@
 		<p class="label">Global Yoishos</p>
 		<p class="value">{$globalCount.toLocaleString()}</p>
 	</div>
-	<div id="chatArea" />
+	<Chat />
 	<div id="chatDivider" />
 	<div id="bottomSection">
 		<div id="localCount">
@@ -95,17 +91,15 @@
 		}
 	}
 
-	#chatArea {
-		background-color: red;
-		height: 65%;
-		width: 65%;
-	}
-
 	#chatDivider {
 		height: 2px;
-		width: 72%;
+		width: 70%;
 
-		background-image: radial-gradient(circle at center, #fefefe 1px, transparent 1px);
+		background-image: radial-gradient(
+			circle at center,
+			rgba(255, 255, 255, 50%) 1px,
+			transparent 1px
+		);
 		background-position: left bottom;
 		background-size: 12px 2px;
 		background-repeat: repeat-x;
