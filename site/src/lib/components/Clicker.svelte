@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getAndPlaySound, getNumAudioTracks } from '$lib/utils/audio';
-	import { localCount, globalCount, updateCounts } from '$lib/utils/store';
+	import { localCount, globalCount, updateCounts } from '$lib/utils/counts';
 	import Chat from './Chat.svelte';
 
 	let numAudioTracks: undefined | number = undefined;

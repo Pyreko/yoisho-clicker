@@ -1,6 +1,12 @@
 <script lang="ts">
 	import Clicker from '$lib/components/Clicker.svelte';
-	import { getGlobalCount, globalCount, setGlobalCount } from '$lib/utils/store';
+	import {
+		getGlobalCount,
+		globalCount,
+		sendBatchedCounts,
+		setGlobalCount
+	} from '$lib/utils/counts';
+	import { onInterval } from '$lib/utils/utils';
 	import { onMount } from 'svelte';
 
 	async function initializeGlobalCount() {
@@ -9,8 +15,11 @@
 	}
 
 	onMount(async () => {
+		await sendBatchedCounts();
 		await initializeGlobalCount();
 	});
+
+	onInterval(sendBatchedCounts, 10 * 1000);
 </script>
 
 <div id="main">

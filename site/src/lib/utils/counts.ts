@@ -1,36 +1,6 @@
 import { get, writable, type Subscriber } from 'svelte/store';
-import { API_URL_BASE } from './utils';
-
-const getLocalKey = (key: string) => {
-	if (typeof localStorage !== 'undefined') {
-		const storedVal = localStorage.getItem(key);
-
-		if (storedVal == null) {
-			return undefined;
-		} else {
-			return storedVal;
-		}
-	} else {
-		return undefined;
-	}
-};
-
-const getLocalNum = (key: string) => {
-	const storedCount = getLocalKey(key);
-
-	if (storedCount == undefined) {
-		return 0;
-	} else {
-		const parsed = parseInt(storedCount, 10);
-		if (isNaN(parsed)) {
-			// If it isn't a number, also erase the value.
-			localStorage.removeItem(key);
-			return 0;
-		} else {
-			return parsed;
-		}
-	}
-};
+import { API_URL_BASE, getLocalNum } from './utils';
+import { onDestroy } from 'svelte';
 
 /**
  * The local count. The initial value is obtained from localStorage.
@@ -40,24 +10,27 @@ export const localCount = writable(getLocalNum('localYoishoCount'));
 /**
  * Holds values to batch send as part of a global update.
  */
-let batchedForGlobal = getLocalNum('batchedYoishoCount');
+let batchedGlobalCounts = getLocalNum('batchedYoishoCount');
 
-// This is a global for lazy reasons.
-// TODO: Make this stop running if 0, and start again otherwise.
-let setGlobalCountTimer = setInterval(async () => {
-	if (batchedForGlobal > 0) {
+/**
+ * Sends the current globally stored batched counts, and resets it to 0.
+ */
+export const sendBatchedCounts = async () => {
+	if (batchedGlobalCounts > 0) {
 		await fetch(`${API_URL_BASE}/increment`, {
 			method: 'POST',
 			mode: 'cors',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ amount: batchedForGlobal })
+			body: JSON.stringify({ amount: batchedGlobalCounts })
 		});
-		batchedForGlobal = 0;
-		localStorage.setItem('batchedYoishoCount', batchedForGlobal.toString());
+		batchedGlobalCounts = 0;
+		localStorage.setItem('batchedYoishoCount', batchedGlobalCounts.toString());
 	}
-}, 10 * 1000);
+};
+
+
 
 /**
  * Updates the local storage by the amount, and also stores it as part
@@ -72,8 +45,8 @@ export const updateCounts = (amount: number) => {
 	});
 	localStorage.setItem('localYoishoCount', newLocalCount.toString());
 
-	batchedForGlobal += amount;
-	localStorage.setItem('batchedYoishoCount', batchedForGlobal.toString());
+	batchedGlobalCounts += amount;
+	localStorage.setItem('batchedYoishoCount', batchedGlobalCounts.toString());
 
 	globalCount.update((curr) => curr + amount);
 };
@@ -113,9 +86,12 @@ export const getGlobalCount = async (): Promise<number> => {
 // This is a global for lazy reasons.
 let getGlobalCountTimer: undefined | ReturnType<typeof setInterval> = undefined;
 
+/**
+ * Some ugly code to make a pretty count-up.
+ * @param set
+ * @param newVal
+ */
 export const setGlobalCount = async (set: Subscriber<number>, newVal: number) => {
-	// Some ugly code to make a pretty count-up.
-	// This is fine as it's not a hot loop... once every 20 seconds is fine... right?
 	let currentVal = get(globalCount);
 
 	if (currentVal != newVal) {
@@ -138,6 +114,10 @@ export const setGlobalCount = async (set: Subscriber<number>, newVal: number) =>
 			}
 		}, 20);
 	}
+
+	onDestroy(() => {
+		clearInterval(getGlobalCountTimer);
+	});
 };
 
 /**
