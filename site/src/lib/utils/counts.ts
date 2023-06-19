@@ -30,8 +30,6 @@ export const sendBatchedCounts = async () => {
 	}
 };
 
-
-
 /**
  * Updates the local storage by the amount, and also stores it as part
  * of the batched counts to send later.
@@ -114,10 +112,6 @@ export const setGlobalCount = async (set: Subscriber<number>, newVal: number) =>
 			}
 		}, 20);
 	}
-
-	onDestroy(() => {
-		clearInterval(getGlobalCountTimer);
-	});
 };
 
 /**

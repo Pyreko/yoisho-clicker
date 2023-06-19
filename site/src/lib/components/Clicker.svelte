@@ -19,7 +19,7 @@
 
 <div id="clicker">
 	<div id="globalCount">
-		<p class="label">Global Yoishos</p>
+		<p class="label">GLOBAL YOISHOS</p>
 		<p class="value">{$globalCount.toLocaleString()}</p>
 	</div>
 	<Chat />
@@ -75,9 +75,10 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.1rem;
+		color: #dc77ab;
+		font-family: PublicaPlayRegular, sans-serif;
 
 		p {
-			font-family: sans-serif;
 			text-align: center;
 			margin: 0;
 		}

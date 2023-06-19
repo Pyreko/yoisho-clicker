@@ -1,6 +1,1 @@
-@font-face {
-	font-family: 'Cushy';
-	font-style: normal;
-	font-weight: 500;
-	src: url('/fonts/Cushy/cushy_regular.otf') format('opentype');
-}
+@import '/fonts/PublicaPlayRegular/font.css';
