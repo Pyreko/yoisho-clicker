@@ -93,7 +93,7 @@
 
 	#chatDivider {
 		height: 2px;
-		width: 70%;
+		width: 68%;
 
 		background-image: radial-gradient(
 			circle at center,

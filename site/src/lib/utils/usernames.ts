@@ -1,4 +1,4 @@
-import { randBool, randomRange } from './utils';
+import { randBool, randomInt, randomIntRange } from './utils';
 
 const username_bases = [
 	'IRyStocrat',
@@ -27,8 +27,9 @@ const username_bases = [
 	'Nephilim',
 	'Hopium',
 	'Copium',
-	'Connect',
 	'Ch.',
+	'Shark',
+	'Rawr',
 	'Idol',
 	'Gravity',
 	'Sleep',
@@ -39,8 +40,6 @@ const username_bases = [
 	'Sports',
 	'Flower',
 	'Frozen',
-	'Rouge',
-	'Rogue',
 	'Dumb',
 	'Genias',
 	'GuyRyS',
@@ -49,27 +48,23 @@ const username_bases = [
 	'Small',
 	'Smol',
 	'Ethereal',
-	'Enchanting',
 	'Seraphic',
 	'Wistful',
 	'Celestial',
 	'Harmonize',
 	'Mystical',
 	'Whispers',
-	'Enchanted',
-	'Wanderlust',
+	'Confused',
+	'Excited',
 	'Radiant',
 	'Dreamer',
 	'Serene',
 	'Phoenix',
 	'Sparkle',
 	'Harmony',
-	'Luminary',
 	'Mystic',
-	'Journey',
 	'Blissful',
 	'Captain',
-	'Zen',
 	'Doctor',
 	'Alex',
 	'Emily',
@@ -77,20 +72,18 @@ const username_bases = [
 	'Sophia',
 	'Jacob',
 	'Olivia',
-	'Mason',
 	'Ava',
 	'Michael',
 	'Isabella',
 	'Daniel',
 	'Mia',
 	'Matthew',
-	'Abigail',
 	'David',
-	'Charlotte',
 	'Noah',
 	'Harper',
 	'James',
 	'Amelia',
+	'Watson',
 	'Benjamin',
 	'Evelyn',
 	'William',
@@ -99,33 +92,54 @@ const username_bases = [
 	'Grace',
 	'Henry',
 	'Lily',
-	'Joseph',
-	'Victoria',
 	'Samuel',
 	'Aria',
-	'Jack',
 	'Zoe',
 	'Gabriel',
 	'Riley',
 	'Jackson',
 	'Nora',
-	'Andrew',
 	'Eleanor',
-	'Liam',
+	'Forte',
 	'Aubrey',
-	'Christopher',
 	'Stella',
 	'Joshua',
 	'Hazel',
 	'Anthony',
 	'Penelope',
 	'Ryan',
-	'Lillian'
+	'Lilith'
 ];
 
 export const generateUsername = () => {
-	const usernameBaseLength = randomRange(1, 3);
-	const hasNumber = randBool();
+	const usernameBaseLength = randomIntRange(1, 2);
+	const nameType = randomInt(116);
 
-    
+	let username = '';
+	for (let i = 0; i < usernameBaseLength; i++) {
+		const isLowerCase = randBool();
+		if (isLowerCase) {
+			username += username_bases[randomInt(username_bases.length - 1)].toLowerCase();
+		} else {
+			username += username_bases[randomInt(username_bases.length - 1)];
+		}
+
+		const hasSpace = randBool();
+		if (hasSpace) {
+			username += ' ';
+		}
+	}
+
+	if (nameType == 69) {
+		username = 'IRySo' + username;
+	} else if (nameType == 116) {
+		username += 'RyS';
+	}
+
+	const hasNumber = randBool();
+	if (hasNumber) {
+		username += randomInt(9999).toString();
+	}
+
+	return username;
 };
