@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { getAndPlaySound, getNumAudioTracks } from '$lib/utils/audio';
 	import { localCount, globalCount, updateCounts } from '$lib/utils/counts';
+	import { children } from 'svelte/internal';
 	import Chat from './Chat.svelte';
 
 	let numAudioTracks: undefined | number = undefined;
 	let audioContext: AudioContext | undefined = undefined;
+
+	let chatChild: Chat | undefined = undefined;
 
 	async function onClick() {
 		updateCounts(1);
@@ -14,6 +17,12 @@
 		}
 
 		await getAndPlaySound(audioContext, numAudioTracks);
+
+		setTimeout(() => {
+			if (chatChild !== undefined) {
+				chatChild.generateMessages();
+			}
+		}, 200);
 	}
 </script>
 
@@ -22,7 +31,7 @@
 		<p class="label">GLOBAL YOISHOS</p>
 		<p class="value">{$globalCount.toLocaleString()}</p>
 	</div>
-	<Chat />
+	<Chat bind:this={chatChild} />
 	<div id="chatDivider" />
 	<div id="bottomSection">
 		<div id="localCount">
@@ -53,17 +62,21 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
-		gap: 2.25rem;
+		gap: 30px;
 
-		min-width: 25rem;
+		min-width: 250px;
 		width: 70%;
 		max-width: 50rem;
-		min-height: 25rem;
+		min-height: 250px;
 		height: 70%;
 		max-height: 50rem;
 		aspect-ratio: 1;
 
-		background: linear-gradient(to bottom, #753f81 0%, #753f81 45%, #cb4092 100%);
+		background: linear-gradient(
+			to bottom,
+			rgba(117, 63, 129, 0.5) 45%,
+			rgba(203, 64, 146, 0.5) 100%
+		);
 	}
 
 	#globalCount {
@@ -76,7 +89,7 @@
 		justify-content: center;
 		gap: 0.1rem;
 		color: #dc77ab;
-		font-family: PublicaPlayRegular, sans-serif;
+		font-family: sans-serif;
 
 		p {
 			text-align: center;
