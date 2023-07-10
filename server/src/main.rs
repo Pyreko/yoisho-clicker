@@ -10,7 +10,7 @@ use std::{fs, sync::Arc};
 
 use axum::{
     handler::HandlerWithoutStateExt,
-    http::{HeaderValue, Method, StatusCode},
+    http::{header::CONTENT_TYPE, HeaderValue, Method, StatusCode},
     response::IntoResponse,
     routing::{get, post},
     Extension, Router,
@@ -73,6 +73,7 @@ async fn main() {
 
     let cors = CorsLayer::new()
         .allow_methods(vec![Method::GET, Method::POST])
+        .allow_headers([CONTENT_TYPE])
         .allow_origin([
             HeaderValue::from_str("http://localhost:3000").unwrap(),
             HeaderValue::from_str("https://yoisho.click").unwrap(),
