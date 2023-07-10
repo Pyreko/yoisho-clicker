@@ -81,6 +81,12 @@
 
 	@media only screen and (min-width: 600px) {
 		p {
+			font-size: small;
+		}
+	}
+
+	@media only screen and (min-width: 768px) {
+		p {
 			font-size: medium;
 		}
 	}
@@ -96,7 +102,7 @@
 	.message-contents {
 		margin: 0;
 		padding: 0;
-		color: white;
+		color: whitesmoke;
 
 		display: flex;
 		flex-direction: row;

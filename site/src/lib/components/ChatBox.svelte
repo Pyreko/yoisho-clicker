@@ -16,8 +16,8 @@
 			}
 		})();
 
-		// This is deliberate, skew the punctuation lower.
-		const endingPunctuation = randomInt(15);
+		// This is deliberate, skew the use of punctuation lower.
+		const punctuation = randomInt(15);
 
 		let message = '';
 
@@ -25,8 +25,9 @@
 		if (confusionRng == 116) {
 			message = "What's going on?";
 		} else {
-			let japaneseRng = randomIntRange(1, 5);
-			if (times == 1 && japaneseRng == 4) {
+			const isJapanese = randomIntRange(1, 5) == 4;
+
+			if (times == 1 && isJapanese) {
 				message = 'よいしょ';
 			} else {
 				for (let i = 0; i < times; i++) {
@@ -37,7 +38,7 @@
 				}
 			}
 
-			switch (endingPunctuation) {
+			switch (punctuation) {
 				case 1:
 					message += '!';
 					break;
@@ -45,13 +46,20 @@
 					message += '?';
 					break;
 				case 3:
-					message += '!?';
+					if (isJapanese) {
+						message += '!?';
+					} else {
+						message += '?!';
+					}
 					break;
 				case 4:
 					message += '...';
 					break;
 				case 5:
-					message += '?!';
+					message += '...?';
+					break;
+				case 6:
+					message = `"${message}"`;
 					break;
 			}
 		}
