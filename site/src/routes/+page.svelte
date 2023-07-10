@@ -31,32 +31,32 @@
 		background: #fde5f1;
 		background-image: url(/images/svgs/bg_pattern.svg);
 		background-position: center;
-		background-size: 60%;
+		background-size: 90%;
 
 		margin: 0;
 	}
 
 	@media only screen and (min-width: 600px) {
 		:global(body) {
-			background-size: 30%;
+			background-size: 85%;
 		}
 	}
 
 	@media only screen and (min-width: 768px) {
 		:global(body) {
-			background-size: 25%;
+			background-size: 80%;
 		}
 	}
 
 	@media only screen and (min-width: 1216px) {
 		:global(body) {
-			background-size: 20%;
+			background-size: 50%;
 		}
 	}
 
 	@media only screen and (min-width: 1408px) {
 		:global(body) {
-			background-size: 15%;
+			background-size: 40%;
 		}
 	}
 
