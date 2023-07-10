@@ -36,8 +36,36 @@
 		--background-white: #fde5f1;
 		--accent-white: #fec3e0;
 
-		background: linear-gradient(to right, var(--background-white) 0%, var(--accent-mid) 100%);
+		background: var(--background-white);
+		background-image: url(images/bg_pattern.svg);
+		background-position: center;
+		background-size: 60%;
+
 		margin: 0;
+	}
+
+	@media only screen and (min-width: 600px) {
+		:global(body) {
+			background-size: 30%;
+		}
+	}
+
+	@media only screen and (min-width: 768px) {
+		:global(body) {
+			background-size: 25%;
+		}
+	}
+
+	@media only screen and (min-width: 1216px) {
+		:global(body) {
+			background-size: 20%;
+		}
+	}
+
+	@media only screen and (min-width: 1408px) {
+		:global(body) {
+			background-size: 15%;
+		}
 	}
 
 	#main {

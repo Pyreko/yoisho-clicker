@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { getAndPlaySound, getNumAudioTracks } from '$lib/utils/audio';
 	import { localCount, globalCount, updateCounts } from '$lib/utils/counts';
-	import { children } from 'svelte/internal';
-	import Chat from './Chat.svelte';
+	import ChatBox from './ChatBox.svelte';
 
 	let numAudioTracks: undefined | number = undefined;
 	let audioContext: AudioContext | undefined = undefined;
 
-	let chatChild: Chat | undefined = undefined;
+	let chatChild: ChatBox | undefined = undefined;
 
 	async function onClick() {
 		updateCounts(1);
@@ -27,59 +26,78 @@
 </script>
 
 <div id="clicker">
-	<div id="globalCount">
+	<div id="global-count">
 		<p class="label">GLOBAL YOISHOS</p>
 		<p class="value">{$globalCount.toLocaleString()}</p>
 	</div>
-	<Chat bind:this={chatChild} />
-	<div id="chatDivider" />
-	<div id="bottomSection">
-		<div id="localCount">
+	<div id="chat-background">
+		<div id="chat-filler" />
+		<div id="chat-wrapper">
+			<ChatBox bind:this={chatChild} />
+		</div>
+		<div id="chat-divider" />
+	</div>
+
+	<div id="bottom-section">
+		<div id="local-count">
 			<p>Yoishos: {$localCount.toLocaleString()}</p>
 		</div>
-		<button id="yoishoButton" on:click={onClick}>Yoisho!</button>
+		<button id="yoisho-button" on:click={onClick}>Yoisho!</button>
 	</div>
 </div>
 
 <style lang="scss">
 	#clicker {
-		clip-path: polygon(
-			47% 0,
-			74% 5%,
-			88% 20%,
-			98% 41%,
-			85% 82%,
-			51% 100%,
-			22% 86%,
-			8% 67%,
-			4% 45%,
-			16% 15%
-		);
-
-		padding: 4rem;
-
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
-		gap: 30px;
+		gap: 1rem;
 
-		min-width: 250px;
-		width: 70%;
-		max-width: 50rem;
-		min-height: 250px;
-		height: 70%;
-		max-height: 50rem;
-		aspect-ratio: 1;
-
-		background: linear-gradient(
-			to bottom,
-			rgba(117, 63, 129, 0.5) 45%,
-			rgba(203, 64, 146, 0.5) 100%
-		);
+		width: 100%;
+		height: 100%;
 	}
 
-	#globalCount {
+	@media only screen and (min-width: 600px) {
+		#clicker {
+			width: 80%;
+			height: 80%;
+		}
+	}
+
+	#chat-background {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 1rem;
+
+		min-width: 300px;
+		width: 100%;
+		max-width: 50rem;
+
+		min-height: 300px;
+		height: 100%;
+		max-height: 50rem;
+
+		aspect-ratio: 1;
+
+		background-image: url(images/chat.svg);
+		background-repeat: no-repeat;
+		background-size: contain;
+		background-position: center;
+
+		mask-image: url(images/chat-mask.svg);
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		mask-position: center;
+
+		backdrop-filter: blur(5px);
+
+		overflow: hidden;
+	}
+
+	#global-count {
 		margin-top: 15px;
 		margin-bottom: 0;
 
@@ -105,9 +123,20 @@
 		}
 	}
 
-	#chatDivider {
+	#chat-filler {
+		height: 15%;
+	}
+
+	#chat-wrapper {
+		width: 60%;
+		height: 40%;
+	}
+
+	#chat-divider {
 		height: 2px;
-		width: 68%;
+
+		min-width: 200px;
+		width: 65%;
 
 		background-image: radial-gradient(
 			circle at center,
@@ -119,7 +148,18 @@
 		background-repeat: repeat-x;
 	}
 
-	#bottomSection {
+	@media only screen and (min-width: 600px) {
+		#chat-wrapper {
+			height: 55%;
+		}
+
+		#chat-divider {
+			min-width: 250px;
+			width: 65%;
+		}
+	}
+
+	#bottom-section {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -129,7 +169,7 @@
 		margin-bottom: 15px;
 	}
 
-	#localCount {
+	#local-count {
 		p {
 			font-family: sans-serif;
 			font-size: 1.5rem;
@@ -139,7 +179,7 @@
 		}
 	}
 
-	#yoishoButton {
+	#yoisho-button {
 		background-color: #fee9f5;
 		color: #644e72;
 		font-family: sans-serif;
@@ -152,7 +192,7 @@
 		cursor: pointer;
 	}
 
-	#yoishoButton:hover {
+	#yoisho-button:hover {
 		background-color: #e5d0dc;
 	}
 </style>

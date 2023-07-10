@@ -2,7 +2,6 @@
 	import { generateUsername } from '$lib/utils/usernames';
 	import { randomInt, randomIntRange } from '$lib/utils/utils';
 	import { Queue } from '@datastructures-js/queue';
-	import { flip } from 'svelte/animate';
 	import { fly } from 'svelte/transition';
 
 	type YoishoText = {
@@ -103,7 +102,7 @@
 	};
 </script>
 
-<div id="chatArea">
+<div id="chat-area">
 	{#each currentMessagesArray as msg (msg)}
 		<div class="message" in:fly={{ y: 10 }}>
 			<p>{msg.username}</p>
@@ -124,18 +123,18 @@
 </div>
 
 <style lang="scss">
-	#chatArea {
+	#chat-area {
 		background-color: transparent;
-		height: 65%;
-		width: 65%;
+		height: 100%;
+		width: 100%;
 		overflow: hidden;
 
 		display: flex;
 		flex-direction: column-reverse;
-		gap: 25px;
+		gap: 0.6rem;
 
-		-webkit-mask-image: linear-gradient(to top, black 70%, transparent 100%);
-		mask-image: linear-gradient(to top, black 70%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to top, black 65%, transparent 100%);
+		mask-image: linear-gradient(to top, black 65%, transparent 100%);
 	}
 
 	.message {
@@ -148,6 +147,20 @@
 		p {
 			margin: 0;
 			padding: 0;
+
+			font-size: small;
+		}
+	}
+
+	@media only screen and (min-width: 600px) {
+		#chat-area {
+			gap: 1.25rem;
+		}
+
+		.message {
+			p {
+				font-size: medium;
+			}
 		}
 	}
 </style>
