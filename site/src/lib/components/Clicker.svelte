@@ -55,13 +55,6 @@
 		height: 100%;
 	}
 
-	@media only screen and (min-width: 600px) {
-		#clicker {
-			width: 80%;
-			height: 80%;
-		}
-	}
-
 	#chat-background {
 		display: flex;
 		flex-direction: column;
@@ -108,7 +101,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.1rem;
-		color: #dc77ab;
+		color: #954c98;
 		font-family: 'Fredoka Variable', sans-serif;
 
 		p {
@@ -173,6 +166,17 @@
 	}
 
 	@media only screen and (min-width: 600px) {
+		#clicker {
+			width: 80%;
+			height: 80%;
+		}
+
+		#global-count {
+			p {
+				font-size: 4rem;
+			}
+		}
+
 		#chat-filler {
 			height: 12%;
 		}
@@ -195,6 +199,12 @@
 	}
 
 	@media only screen and (min-width: 768px) {
+		#global-count {
+			p {
+				font-size: 4.5rem;
+			}
+		}
+
 		#under-chat {
 			gap: 0.25rem;
 

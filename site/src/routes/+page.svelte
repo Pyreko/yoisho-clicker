@@ -28,15 +28,7 @@
 
 <style lang="scss">
 	:global(body) {
-		--accent-light: #ee62b8;
-		--accent-mid: #8e4597;
-		--accent-mid-darker: #944a97;
-		--accent-dark: #743b87;
-		--background-pink: #f45e9e;
-		--background-white: #fde5f1;
-		--accent-white: #fec3e0;
-
-		background: var(--background-white);
+		background: #fde5f1;
 		background-image: url(images/svgs/bg_pattern.svg);
 		background-position: center;
 		background-size: 60%;
