@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { getAndPlaySound, getNumAudioTracks } from '$lib/utils/audio';
+	import { getAndPlaySound, getNumAudioTracks, numAudioTracks } from '$lib/utils/audio';
 	import { localCount, globalCount, updateCounts } from '$lib/utils/counts';
 	import ChatBox from './ChatBox.svelte';
 
-	let numAudioTracks: undefined | number = undefined;
 	let audioContext: AudioContext | undefined = undefined;
 
 	let chatChild: ChatBox | undefined = undefined;
@@ -11,11 +10,11 @@
 	async function onClick() {
 		updateCounts(1);
 
-		if (numAudioTracks === undefined) {
-			numAudioTracks = (await getNumAudioTracks()) - 1;
+		if ($numAudioTracks == 0) {
+			numAudioTracks.set((await getNumAudioTracks()) - 1);
 		}
 
-		await getAndPlaySound(audioContext, numAudioTracks);
+		await getAndPlaySound(audioContext, $numAudioTracks);
 
 		setTimeout(() => {
 			if (chatChild !== undefined) {

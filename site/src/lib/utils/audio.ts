@@ -1,4 +1,7 @@
+import { writable } from 'svelte/store';
 import { API_URL_BASE, randomInt } from './utils';
+
+export const numAudioTracks = writable(0);
 
 /**
  * Gets and plays a single sound from the API.
@@ -39,7 +42,7 @@ export const getNumAudioTracks = async (): Promise<number> => {
 
 		if (resp.ok) {
 			const json = await resp.json();
-			const parsed = parseInt(json['count'], 10);
+			const parsed = parseInt(json, 10);
 			if (!isNaN(parsed)) {
 				return parsed;
 			}
