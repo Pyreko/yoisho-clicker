@@ -88,7 +88,7 @@ const username_bases = [
 	'Evelyn',
 	'William',
 	'Scarlett',
-	'Alexander',
+	'Bob',
 	'Grace',
 	'Henry',
 	'Lily',

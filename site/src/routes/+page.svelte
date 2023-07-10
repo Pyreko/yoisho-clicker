@@ -37,7 +37,7 @@
 		--accent-white: #fec3e0;
 
 		background: var(--background-white);
-		background-image: url(images/bg_pattern.svg);
+		background-image: url(images/svgs/bg_pattern.svg);
 		background-position: center;
 		background-size: 60%;
 

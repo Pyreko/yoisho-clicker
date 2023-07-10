@@ -1,26 +1,9 @@
 <script lang="ts">
+	import { MembershipLevel, type Message } from '$lib/utils/chat';
 	import { generateUsername } from '$lib/utils/usernames';
 	import { randomInt, randomIntRange } from '$lib/utils/utils';
 	import { Queue } from '@datastructures-js/queue';
-	import { fly } from 'svelte/transition';
-
-	type YoishoText = {
-		contents: string;
-	};
-
-	type YoishoEmotes = {
-		repetitions: number;
-	};
-
-	type Message = {
-		username: string;
-		isMember: boolean;
-		message: YoishoText | YoishoEmotes;
-	};
-
-	const isEmotes = (object: YoishoText | YoishoEmotes): object is YoishoEmotes => {
-		return 'repetitions' in object;
-	};
+	import ChatMessage from './ChatMessage.svelte';
 
 	const generateYoishoText = (): string => {
 		// Skew towards a single yoisho.
@@ -80,16 +63,20 @@
 		const numMessages = randomIntRange(1, 5);
 		for (let i = 0; i < numMessages; i++) {
 			const username = generateUsername();
-			const isMember = randomIntRange(1, 3) == 2;
+			let membership = 0;
+			if (randomIntRange(1, 3) == 2) {
+				membership = randomIntRange(1, 5);
+			}
+
 			const messageType = randomInt(3);
 			const message =
 				messageType == 3
 					? { contents: generateYoishoText() }
-					: { repetitions: randomIntRange(1, 6) };
+					: { repetitions: randomIntRange(MembershipLevel.New, MembershipLevel.Pon) };
 
 			currentMessages.push({
 				username: username,
-				isMember: isMember,
+				membership: membership,
 				message: message
 			});
 		}
@@ -104,21 +91,7 @@
 
 <div id="chat-area">
 	{#each currentMessagesArray as msg (msg)}
-		<div class="message" in:fly={{ y: 10 }}>
-			<p>{msg.username}</p>
-			{#if msg.isMember}
-				<p>M</p>
-			{/if}
-			{#if isEmotes(msg.message)}
-				<p>
-					{#each { length: msg.message.repetitions } as _, i}
-						EMOTE
-					{/each}
-				</p>
-			{:else}
-				<p>{msg.message.contents}</p>
-			{/if}
-		</div>
+		<ChatMessage {msg} />
 	{/each}
 </div>
 
@@ -137,30 +110,9 @@
 		mask-image: linear-gradient(to top, black 65%, transparent 100%);
 	}
 
-	.message {
-		display: flex;
-		flex-direction: row;
-		align-items: flex-start;
-		justify-content: flex-start;
-		gap: 10px;
-
-		p {
-			margin: 0;
-			padding: 0;
-
-			font-size: small;
-		}
-	}
-
 	@media only screen and (min-width: 600px) {
 		#chat-area {
 			gap: 1.25rem;
-		}
-
-		.message {
-			p {
-				font-size: medium;
-			}
 		}
 	}
 </style>

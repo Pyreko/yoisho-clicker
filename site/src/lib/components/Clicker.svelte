@@ -82,12 +82,13 @@
 
 		aspect-ratio: 1;
 
-		background-image: url(images/chat.svg);
-		background-repeat: no-repeat;
-		background-size: contain;
-		background-position: center;
+		background: linear-gradient(
+			to bottom,
+			rgb(114, 59, 138, 0.85) 60%,
+			rgb(203, 64, 146, 0.85) 100%
+		);
 
-		mask-image: url(images/chat-mask.svg);
+		mask-image: url(images/svgs/chat-mask.svg);
 		mask-size: contain;
 		mask-repeat: no-repeat;
 		mask-position: center;
@@ -129,7 +130,7 @@
 
 	#chat-wrapper {
 		width: 60%;
-		height: 40%;
+		height: 45%;
 	}
 
 	#chat-divider {

@@ -7,58 +7,27 @@
    width="300"
    height="300"
    viewBox="0 0 299.99999 300.00001"
-   sodipodi:docname="chat-mask.svg"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   inkscape:export-filename="../../../projects/pyreko/yoisho-clicker/site/static/images/chat.svg"
-   inkscape:export-xdpi="104.56555"
-   inkscape:export-ydpi="104.56555"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs255">
     <linearGradient
-       id="linearGradient28572"
-       inkscape:swatch="solid">
+       id="linearGradient28572">
       <stop
          style="stop-color:#000000;stop-opacity:1;"
          offset="0"
          id="stop28570" />
     </linearGradient>
   </defs>
-  <sodipodi:namedview
-     id="namedview253"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:zoom="1.0761378"
-     inkscape:cx="-23.695849"
-     inkscape:cy="247.18023"
-     inkscape:window-width="1272"
-     inkscape:window-height="1400"
-     inkscape:window-x="3"
-     inkscape:window-y="33"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g257" />
   <g
-     inkscape:groupmode="layer"
-     inkscape:label="Image"
      id="g257"
      transform="translate(-14.588201,-3.8277215)">
     <path
        id="path43163"
        style="display:none;mix-blend-mode:normal;fill:#008ebf;fill-opacity:1;stroke:#e384d4;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill;image-rendering:auto"
-       d="m 153.27375,7.4273333 -91.523436,44.5390627 -34.875,87.330084 11.636719,64.54297 41.152344,55.26172 84.716793,41.12695 99.97265,-52.75586 L 302.30109,127.83945 272.61554,65.192958 232.48859,22.51913 Z"
-       inkscape:label="outer" />
+       d="m 153.27375,7.4273333 -91.523436,44.5390627 -34.875,87.330084 11.636719,64.54297 41.152344,55.26172 84.716793,41.12695 99.97265,-52.75586 L 302.30109,127.83945 272.61554,65.192958 232.48859,22.51913 Z" />
     <g
        id="path44834"
-       inkscape:label="outer"
        transform="translate(11.437321,2.7493171)">
       <path
          id="path44839"
@@ -68,8 +37,6 @@
     <path
        style="display:inline;mix-blend-mode:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
        d="M 232.4895,22.519854 153.27318,7.4282289 61.749857,51.965784 26.875532,139.29553 l 11.635762,64.54429 41.15393,55.26222 84.716416,41.12517 99.97255,-52.75545 37.94668,-119.6323 -29.68564,-62.647426"
-       id="path23218"
-       sodipodi:nodetypes="cccccccccc"
-       inkscape:label="inner" />
+       id="path23218" />
   </g>
 </svg>
