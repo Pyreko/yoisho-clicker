@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
 import { onDestroy } from 'svelte';
 
-export const API_URL_BASE: string = dev ? 'http://localhost:8088' : 'https://api.yoisho.clicker';
+export const API_URL_BASE: string = dev ? 'http://localhost:8088' : 'https://api.yoisho.click';
 
 /**
  *  Returns a random value from `start` up to and including `end`.

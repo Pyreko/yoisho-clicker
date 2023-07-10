@@ -75,7 +75,7 @@ async fn main() {
         .allow_methods(vec![Method::GET, Method::POST])
         .allow_origin([
             HeaderValue::from_str("http://localhost:3000").unwrap(),
-            HeaderValue::from_str("https://yoisho.clicker").unwrap(),
+            HeaderValue::from_str("https://yoisho.click").unwrap(),
         ]);
 
     info!("Setting up router...");
