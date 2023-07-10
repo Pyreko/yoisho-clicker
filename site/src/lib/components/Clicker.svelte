@@ -129,8 +129,8 @@
 	}
 
 	#chat-wrapper {
-		width: 60%;
-		height: 45%;
+		width: 65%;
+		height: 50%;
 	}
 
 	#chat-divider {
@@ -150,6 +150,10 @@
 	}
 
 	@media only screen and (min-width: 600px) {
+		#chat-filler {
+			height: 12%;
+		}
+
 		#chat-wrapper {
 			height: 55%;
 		}

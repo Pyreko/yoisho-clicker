@@ -6,7 +6,7 @@
 	import ChatMessage from './ChatMessage.svelte';
 
 	const generateYoishoText = (): string => {
-		// Skew towards a single yoisho.
+		// Skew towards a single Yoisho.
 		const times = (() => {
 			const t = randomIntRange(1, 20);
 			if (t > 3) {
@@ -25,10 +25,15 @@
 		if (confusionRng == 116) {
 			message = "What's going on?";
 		} else {
-			for (let i = 0; i < times; i++) {
-				message += 'yoisho';
-				if (i < times - 1) {
-					message += ' ';
+			let japaneseRng = randomIntRange(1, 5);
+			if (times == 1 && japaneseRng == 4) {
+				message = 'よいしょ';
+			} else {
+				for (let i = 0; i < times; i++) {
+					message += 'yoisho';
+					if (i < times - 1) {
+						message += ' ';
+					}
 				}
 			}
 
@@ -65,14 +70,14 @@
 			const username = generateUsername();
 			let membership = 0;
 			if (randomIntRange(1, 3) == 2) {
-				membership = randomIntRange(1, 5);
+				membership = randomIntRange(MembershipLevel.New, MembershipLevel.Pon);
 			}
 
 			const messageType = randomInt(3);
 			const message =
 				messageType == 3
 					? { contents: generateYoishoText() }
-					: { repetitions: randomIntRange(MembershipLevel.New, MembershipLevel.Pon) };
+					: { repetitions: randomIntRange(1, 5) };
 
 			currentMessages.push({
 				username: username,

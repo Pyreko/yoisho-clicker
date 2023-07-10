@@ -65,6 +65,7 @@
 
 	.message {
 		display: flex;
+		flex-wrap: wrap;
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-start;
@@ -74,7 +75,8 @@
 		padding: 0;
 		margin: 0;
 		font-size: small;
-		font-family: sans-serif;
+		font-family: 'M PLUS 2', sans-serif;
+		font-weight: 700;
 	}
 
 	@media only screen and (min-width: 600px) {
@@ -101,6 +103,6 @@
 		align-items: center;
 		justify-content: flex-start;
 
-		padding-left: 10px;
+		padding-left: 8px;
 	}
 </style>

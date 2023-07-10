@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@datastructures-js/queue": "^4.2.3"
+		"@datastructures-js/queue": "^4.2.3",
+		"@fontsource/m-plus-2": "^5.0.5"
 	}
 }
