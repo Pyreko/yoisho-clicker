@@ -17,16 +17,16 @@ export const getAndPlaySound = async (
 	audio.src = `${API_URL_BASE}/sound/${whichTrack}`;
 
 	// Now stick it in a random channel from -1 to 1.
-	if (audioContext == undefined) {
-		audioContext = new AudioContext();
-	}
+	// if (audioContext == undefined) {
+	// 	audioContext = new AudioContext();
+	// }
 
-	if (audioContext != undefined) {
-		const src = audioContext.createMediaElementSource(audio);
-		const pan = randomInt(2) - 1; // Random value from -1, 0, and 1.
-		const stereoNode = new StereoPannerNode(audioContext, { pan });
-		src.connect(stereoNode).connect(audioContext.destination);
-	}
+	// if (audioContext != undefined) {
+	// 	const src = audioContext.createMediaElementSource(audio);
+	// 	const pan = randomInt(2) - 1; // Random value from -1, 0, and 1.
+	// 	const stereoNode = new StereoPannerNode(audioContext, { pan });
+	// 	src.connect(stereoNode).connect(audioContext.destination);
+	// }
 
 	audio.play();
 };
