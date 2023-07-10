@@ -1,6 +1,5 @@
 import { get, writable, type Subscriber } from 'svelte/store';
 import { API_URL_BASE, getLocalNum } from './utils';
-import { onDestroy } from 'svelte';
 
 /**
  * The local count. The initial value is obtained from localStorage.

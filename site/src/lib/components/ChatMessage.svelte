@@ -37,7 +37,8 @@
 	{/if}
 	<div class="message-contents">
 		{#if isEmotes(msg.message)}
-			{#each { length: msg.message.repetitions } as _, i}
+			<!-- eslint-disable -->
+			{#each { length: msg.message.repetitions } as _}
 				<img src="images/emotes/yoisho.webp" alt="yoisho membership emote" class="emote" />
 			{/each}
 		{:else}
