@@ -1,0 +1,63 @@
+name: check-and-deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+
+env:
+  GIT_USER: "github-actions[bot]"
+  GIT_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  pre-deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@f11521568414503656a5af807dc3018c012552c4
+        with:
+          paths_ignore: '["**/README.md", "server/**", "LICENSE"]'
+          do_not_skip: '["workflow_dispatch"]'
+
+  deploy:
+    name: "Deploy static page"
+    needs: [ci, pre-deploy]
+    if: ${{ needs.pre-deploy.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Configure git user and email
+        run: |
+          git config --global user.name ${GIT_USER}
+          git config --global user.email ${GIT_EMAIL}
+          echo Name: $(git config --get user.name)
+          echo Email: $(git config --get user.email)
+
+      - name: npm install and build
+        run: |
+          cd site
+          npm install
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.9.0
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site/build
+          publish_branch: web-deploy
