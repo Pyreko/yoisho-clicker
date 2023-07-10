@@ -26,8 +26,9 @@
 </script>
 
 <div id="clicker">
-	<div id="global-count">
-		<p>{$globalCount.toLocaleString()}</p>
+	<div id="above-chat">
+		<p>global yoishos</p>
+		<p id="global-count">{$globalCount.toLocaleString()}</p>
 	</div>
 	<div id="chat-background">
 		<div id="chat-filler" />
@@ -92,7 +93,7 @@
 		overflow: hidden;
 	}
 
-	#global-count {
+	#above-chat {
 		margin-top: 15px;
 		margin-bottom: 0;
 
@@ -107,6 +108,10 @@
 		p {
 			text-align: center;
 			margin: 0;
+			font-size: 1rem;
+		}
+
+		#global-count {
 			font-size: 3.25rem;
 		}
 	}
@@ -171,8 +176,12 @@
 			height: 80%;
 		}
 
-		#global-count {
+		#above-chat {
 			p {
+				font-size: 1rem;
+			}
+
+			#global-count {
 				font-size: 4rem;
 			}
 		}
@@ -199,8 +208,12 @@
 	}
 
 	@media only screen and (min-width: 768px) {
-		#global-count {
+		#above-chat {
 			p {
+				font-size: 1.5rem;
+			}
+
+			#global-count {
 				font-size: 4.5rem;
 			}
 		}
