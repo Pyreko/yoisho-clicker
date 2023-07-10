@@ -78,12 +78,12 @@
 			rgb(203, 64, 146, 0.85) 100%
 		);
 
-		-webkit-mask-image: url(images/svgs/chat-mask.svg);
+		-webkit-mask-image: url(/images/svgs/chat-mask.svg);
 		-webkit-mask-size: contain;
 		-webkit-mask-repeat: no-repeat;
 		-webkit-mask-position: center;
 
-		mask-image: url(images/svgs/chat-mask.svg);
+		mask-image: url(/images/svgs/chat-mask.svg);
 		mask-size: contain;
 		mask-repeat: no-repeat;
 		mask-position: center;

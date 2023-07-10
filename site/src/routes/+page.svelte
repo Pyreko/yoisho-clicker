@@ -29,7 +29,7 @@
 <style lang="scss">
 	:global(body) {
 		background: #fde5f1;
-		background-image: url(images/svgs/bg_pattern.svg);
+		background-image: url(/images/svgs/bg_pattern.svg);
 		background-position: center;
 		background-size: 60%;
 
