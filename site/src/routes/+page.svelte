@@ -19,7 +19,7 @@
 		await initializeGlobalCount();
 	});
 
-	onInterval(sendBatchedCounts, 10 * 1000);
+	onInterval(sendBatchedCounts, 5 * 1000);
 </script>
 
 <div id="main">

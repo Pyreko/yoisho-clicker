@@ -120,7 +120,7 @@ export const globalCount = writable(0, (set) => {
 	const interval = setInterval(async () => {
 		const newVal = await getGlobalCount();
 		await setGlobalCount(set, newVal);
-	}, 20 * 1000);
+	}, 10 * 1000);
 
 	return () => {
 		clearInterval(interval);
