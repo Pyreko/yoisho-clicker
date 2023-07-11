@@ -55,7 +55,7 @@
 				<h1>Where can I get the yoishos?</h1>
 				<p>
 					All voice clips can be found <a
-						href="https://github.com/Pyreko/yoisho-clicker/tree/main/site/assets"
+						href="https://github.com/Pyreko/yoisho-clicker/tree/main/server/assets"
 						target="_blank"
 						rel="noopener noreferrer">here</a
 					>. There are {$numAudioTracks + 1} voice clips as of writing.
