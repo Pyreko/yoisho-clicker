@@ -149,7 +149,7 @@
 				<h1>Something not working?</h1>
 				<p>
 					If you find something not working, please report it <a
-						href="https://github.com/Pyreko/hows-the-volume/issues"
+						href="https://github.com/Pyreko/yoisho-clicker/issues"
 						target="_blank"
 						rel="noopener noreferrer">here</a
 					>!
