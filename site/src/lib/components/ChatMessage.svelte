@@ -31,6 +31,7 @@
 			src={`images/badges/${membershipLevel}.webp`}
 			alt={`${membershipLevel} membership badge`}
 			class="badge"
+			loading="lazy"
 		/>
 	{:else}
 		<p class="username">{msg.username}</p>
@@ -39,7 +40,12 @@
 		{#if isEmotes(msg.message)}
 			<!-- eslint-disable -->
 			{#each { length: msg.message.repetitions } as _}
-				<img src="images/emotes/yoisho.webp" alt="yoisho membership emote" class="emote" />
+				<img
+					src="images/emotes/yoisho.webp"
+					alt="yoisho membership emote"
+					class="emote"
+					loading="lazy"
+				/>
 			{/each}
 		{:else}
 			<p>{msg.message.contents}</p>
