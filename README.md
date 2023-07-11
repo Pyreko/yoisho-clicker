@@ -4,6 +4,32 @@ Another year, another silly clicker website.
 
 ## Usage
 
+### Server
+
+Run:
+
+```bash
+# Build
+cargo build --release
+
+# Build and run
+cargo run --release
+```
+
+### Site
+
+Run:
+
+```bash
+npm install
+
+# Dev build
+npm run dev
+
+# Build for prod
+npm build
+```
+
 ## Thanks
 
 Lots of stuff and people to thank:
