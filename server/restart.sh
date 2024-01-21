@@ -2,10 +2,12 @@
 
 set -eux
 
-pkill -2 yoisho-server || true;
-while pgrep -u $UID -x yoisho-server >/dev/null; do sleep 1; done;
-rm -r $HOME/yc-server;
-mkdir -p $HOME/yc-server;
-cp ./target/release/yoisho-server $HOME/yc-server/yoisho-server;
-cd $HOME/yc-server;
-nohup ./yoisho-server -a $HOME/yoisho-server/assets > /dev/null 2>&1 &
+pkill -2 yoisho-clicker || true
+while pgrep -u $UID -x yoisho-clicker >/dev/null; do sleep 1; done
+mkdir -p ~/yc-server
+cp ./target/release/yoisho-server ~/yc-server/yoisho-server
+cp -r ./assets ~/yc-server/
+cp .env ~/yc-server/
+cp clean_log.sh ~/yc-server/
+cd ~/yc-server
+nohup ./yoisho-server > /dev/null 2>&1 &
