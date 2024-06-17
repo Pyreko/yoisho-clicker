@@ -7,6 +7,7 @@ const username_bases = [
 	'Honk',
 	'Pon',
 	'Yeet',
+	'Bunny',
 	'Huh',
 	'Bloom',
 	'Gloom',
