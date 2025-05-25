@@ -9,11 +9,11 @@ use tracing_subscriber::EnvFilter;
 use std::{fs, sync::Arc};
 
 use axum::{
+    Extension, Router,
     handler::HandlerWithoutStateExt,
-    http::{header::CONTENT_TYPE, HeaderValue, Method, StatusCode},
+    http::{HeaderValue, Method, StatusCode, header::CONTENT_TYPE},
     response::IntoResponse,
     routing::{get, post},
-    Extension, Router,
 };
 use clap::Parser;
 use sqlx::SqlitePool;
