@@ -69,13 +69,23 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Listening on {address}");
 
+    let origins = [
+        "http://localhost:3000".parse::<HeaderValue>()?,
+        "https://yoisho.howsthevolu.me".parse::<HeaderValue>()?,
+        "https://howsthevolu.me".parse::<HeaderValue>()?,
+    ];
+
     let cors = CorsLayer::new()
         .allow_methods(vec![Method::GET, Method::POST])
         .allow_headers([CONTENT_TYPE])
-        .allow_origin([
-            HeaderValue::from_str("http://localhost:3000")?,
-            HeaderValue::from_str("https://yoisho.howsthevolu.me")?,
-        ]);
+        .allow_origin(origins);
+
+    if args.assets_path.exists() {
+        let num_files = fs::read_dir(&args.assets_path)?.count();
+        info!("Found {num_files} files in assets!");
+    } else {
+        error!("Warning - no assets folder found!");
+    }
 
     info!("Setting up router...");
     let app = Router::new()
@@ -83,18 +93,11 @@ async fn main() -> anyhow::Result<()> {
         .route("/increment", post(increment))
         .route("/count", get(count))
         .route("/num-files", get(num_audio_tracks))
-        .layer(Extension(pool.clone()))
-        .layer(Extension(args.assets_path.clone()))
-        .layer(TraceLayer::new_for_http())
         .layer(cors)
+        .layer(Extension(pool.clone()))
+        .layer(Extension(args.assets_path))
+        .layer(TraceLayer::new_for_http())
         .fallback_service(not_found_handler.into_service());
-
-    if args.assets_path.exists() {
-        let num_files = fs::read_dir(args.assets_path)?.count();
-        info!("Found {num_files} files in assets!");
-    } else {
-        error!("Warning - no assets folder found!");
-    }
 
     info!("Starting up Axum server...");
     axum::serve(addr, app.into_make_service())
@@ -103,6 +106,9 @@ async fn main() -> anyhow::Result<()> {
             info!("Shutdown signal received.");
         })
         .await?;
+
+    info!("Closing SQLite connection.");
+    pool.close().await;
 
     info!("Shutting down YC server.");
 
