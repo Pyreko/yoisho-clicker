@@ -29,8 +29,8 @@ struct Args {
 }
 
 #[tokio::main]
-async fn main() {
-    dotenv::dotenv().unwrap();
+async fn main() -> anyhow::Result<()> {
+    dotenv::dotenv()?;
     let args = Args::parse();
 
     // Initialize logging.
@@ -57,27 +57,24 @@ async fn main() {
         .database_url
         .unwrap_or_else(|| std::env::var("DATABASE_URL").expect("The sqlite server must either be passed as an argument or set as an environment variable!"));
 
-    let pool = Arc::new(
-        SqlitePool::connect(&format!("sqlite://{}", database_url))
-            .await
-            .unwrap(),
-    );
+    let pool = Arc::new(SqlitePool::connect(&format!("sqlite://{}", database_url)).await?);
 
     // Assert that the database works before initialization.
     get_count(pool.clone())
         .await
         .expect("Database has the correct columns.");
 
-    let addr = "127.0.0.1:8088".parse().unwrap();
-    info!("Listening on {}...", addr);
+    let address = "127.0.0.1:8088";
+    let addr = tokio::net::TcpListener::bind(address).await?;
+
+    info!("Listening on {address}");
 
     let cors = CorsLayer::new()
         .allow_methods(vec![Method::GET, Method::POST])
         .allow_headers([CONTENT_TYPE])
         .allow_origin([
-            HeaderValue::from_str("http://localhost:3000").unwrap(),
-            HeaderValue::from_str("https://yoisho.howsthevolu.me").unwrap(),
-            HeaderValue::from_str("https://howsthevolu.me").unwrap(),
+            HeaderValue::from_str("http://localhost:3000")?,
+            HeaderValue::from_str("https://yoisho.howsthevolu.me")?,
         ]);
 
     info!("Setting up router...");
@@ -93,23 +90,23 @@ async fn main() {
         .fallback_service(not_found_handler.into_service());
 
     if args.assets_path.exists() {
-        let num_files = fs::read_dir(args.assets_path).unwrap().count();
+        let num_files = fs::read_dir(args.assets_path)?.count();
         info!("Found {num_files} files in assets!");
     } else {
         error!("Warning - no assets folder found!");
     }
 
     info!("Starting up Axum server...");
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    axum::serve(addr, app.into_make_service())
         .with_graceful_shutdown(async {
             tokio::signal::ctrl_c().await.unwrap();
             info!("Shutdown signal received.");
         })
-        .await
-        .unwrap();
+        .await?;
 
     info!("Shutting down YC server.");
+
+    Ok(())
 }
 
 fn not_found() -> StatusCode {
