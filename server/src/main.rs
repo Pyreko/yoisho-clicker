@@ -69,18 +69,17 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Listening on {address}");
 
-    // let origins = [
-    //     "http://localhost:3000".parse::<HeaderValue>()?,
-    //     "https://yoisho.howsthevolu.me".parse::<HeaderValue>()?,
-    //     "https://howsthevolu.me".parse::<HeaderValue>()?,
-    // ];
+    let origins = [
+        "http://localhost:3000".parse::<HeaderValue>()?,
+        "https://yoisho.howsthevolu.me".parse::<HeaderValue>()?,
+        "https://apiyoisho.howsthevolu.me".parse::<HeaderValue>()?,
+        "https://howsthevolu.me".parse::<HeaderValue>()?,
+    ];
 
-    // let cors = CorsLayer::new()
-    //     .allow_methods(vec![Method::GET, Method::POST])
-    //     .allow_headers([CONTENT_TYPE])
-    //     .allow_origin(origins);
-
-    let cors = CorsLayer::permissive();
+    let cors = CorsLayer::new()
+        .allow_methods(vec![Method::GET, Method::POST])
+        .allow_headers([CONTENT_TYPE])
+        .allow_origin(origins);
 
     if args.assets_path.exists() {
         let num_files = fs::read_dir(&args.assets_path)?.count();
