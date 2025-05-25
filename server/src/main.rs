@@ -69,16 +69,18 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Listening on {address}");
 
-    let origins = [
-        "http://localhost:3000".parse::<HeaderValue>()?,
-        "https://yoisho.howsthevolu.me".parse::<HeaderValue>()?,
-        "https://howsthevolu.me".parse::<HeaderValue>()?,
-    ];
+    // let origins = [
+    //     "http://localhost:3000".parse::<HeaderValue>()?,
+    //     "https://yoisho.howsthevolu.me".parse::<HeaderValue>()?,
+    //     "https://howsthevolu.me".parse::<HeaderValue>()?,
+    // ];
 
-    let cors = CorsLayer::new()
-        .allow_methods(vec![Method::GET, Method::POST])
-        .allow_headers([CONTENT_TYPE])
-        .allow_origin(origins);
+    // let cors = CorsLayer::new()
+    //     .allow_methods(vec![Method::GET, Method::POST])
+    //     .allow_headers([CONTENT_TYPE])
+    //     .allow_origin(origins);
+
+    let cors = CorsLayer::permissive();
 
     if args.assets_path.exists() {
         let num_files = fs::read_dir(&args.assets_path)?.count();
@@ -93,10 +95,10 @@ async fn main() -> anyhow::Result<()> {
         .route("/increment", post(increment))
         .route("/count", get(count))
         .route("/num-files", get(num_audio_tracks))
-        .layer(cors)
         .layer(Extension(pool.clone()))
         .layer(Extension(args.assets_path))
         .layer(TraceLayer::new_for_http())
+        .layer(cors)
         .fallback_service(not_found_handler.into_service());
 
     info!("Starting up Axum server...");
