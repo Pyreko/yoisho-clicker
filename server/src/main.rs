@@ -77,6 +77,7 @@ async fn main() {
         .allow_origin([
             HeaderValue::from_str("http://localhost:3000").unwrap(),
             HeaderValue::from_str("https://yoisho.howsthevolu.me").unwrap(),
+            HeaderValue::from_str("https://howsthevolu.me").unwrap(),
         ]);
 
     info!("Setting up router...");
