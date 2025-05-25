@@ -79,7 +79,7 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Setting up router...");
     let app = Router::new()
-        .route("/sound/:id", get(sound))
+        .route("/sound/{id}", get(sound))
         .route("/increment", post(increment))
         .route("/count", get(count))
         .route("/num-files", get(num_audio_tracks))
