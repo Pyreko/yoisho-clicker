@@ -1,11 +1,11 @@
 use std::path::PathBuf;
 
 use axum::{
+    Extension, Json,
     body::Body,
-    extract::{rejection::PathRejection, Path},
+    extract::{Path, rejection::PathRejection},
     http::{Request, StatusCode},
     response::{IntoResponse, Response},
-    Extension, Json,
 };
 use tower::util::ServiceExt;
 use tower_http::services::ServeDir;

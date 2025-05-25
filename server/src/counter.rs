@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use axum::{http::StatusCode, response::Result, Extension, Json};
+use axum::{Extension, Json, http::StatusCode, response::Result};
 use serde::Deserialize;
 use sqlx::{Pool, Sqlite};
 use tracing::{error, warn};
@@ -10,7 +10,7 @@ pub async fn get_count(pool: Arc<Pool<Sqlite>>) -> std::result::Result<u64, sqlx
     match pool.acquire().await {
         Ok(mut conn) => {
             match sqlx::query!("SELECT count FROM counts WHERE name = 'yoisho'")
-                .fetch_one(&mut conn)
+                .fetch_one(&mut *conn)
                 .await
             {
                 Ok(query) => Ok(query.count as u64),
@@ -53,17 +53,12 @@ pub async fn increment(
             "UPDATE counts SET count = count + ? WHERE name = 'yoisho' RETURNING count",
             id
         )
-        .fetch_one(&mut conn)
+        .fetch_one(&mut *conn)
         .await
         {
-            Ok(res) => match res.count {
-                Some(count) => {
-                    return Ok(Json(count as u64));
-                }
-                None => {
-                    error!("count was missing! Re-initialize the database!");
-                }
-            },
+            Ok(res) => {
+                return Ok(Json(res.count as u64));
+            }
             Err(err) => {
                 error!("Failed to increment in DB - err: {}", err);
             }

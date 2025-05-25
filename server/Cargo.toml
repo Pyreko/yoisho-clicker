@@ -1,7 +1,7 @@
 [package]
 name = "yoisho-clicker-server"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [profile.release]
 lto = true
@@ -12,17 +12,15 @@ name = "yoisho-server"
 path = "src/main.rs"
 
 [dependencies]
-axum = "0.6.18"
-clap = { version = "4.2.7", default-features = false, features = [
-    "std",
-    "derive",
-] }
-dotenv = "0.15.0"
-serde = { version = "1.0.163", features = ["derive"] }
-sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "sqlite"] }
-tokio = { version = "1.28.1", features = ["full"] }
-tower = "0.4.13"
-tower-http = { version = "0.4.0", features = ["full"] }
-tracing = "0.1.37"
-tracing-appender = "0.2.2"
-tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+anyhow = "1.0.98"
+axum = { version = "0.8.4", features = ["http2", "tokio"] }                          # The webapp framework of choice.
+clap = { version = "4.2.7", default-features = false, features = ["std", "derive"] }
+dotenv = "0.15.0"                                                                    # For accessing env vars stored in .env
+serde = { version = "1.0.219", features = ["derive"] }                               # For JSON serialization.
+sqlx = { version = "0.8.2", features = ["runtime-tokio-rustls", "sqlite"] }          # For storing counts. Overkill.
+tracing = "0.1.41"                                                                   # For tracing, alongside tracing-appender and tracing-subscriber.
+tracing-appender = "0.2.3"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tokio = { version = "1.43.0", features = ["full"] }                                  # tokio's used for async.
+tower = "0.5.1"                                                                      # Used alongside tower-http for serving files.
+tower-http = { version = "0.6.2", features = ["full"] }
